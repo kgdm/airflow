@@ -138,6 +138,8 @@ class KubernetesPodOperator(BaseOperator):  # pylint: disable=too-many-instance-
         /airflow/xcom/return.json in the container will also be pushed to an
         XCom when the container completes.
     :type do_xcom_push: bool
+    :param init_containers: init container for the launched Pod
+    :type init_containers: list[kubernetes.client.models.V1Container]
     :param pod_template_file: path to pod template file
     :type pod_template_file: str
     """
@@ -178,11 +180,11 @@ class KubernetesPodOperator(BaseOperator):  # pylint: disable=too-many-instance-
                  dnspolicy=None,
                  schedulername=None,
                  full_pod_spec=None,
-                 init_containers=None,
                  log_events_on_failure=False,
                  do_xcom_push=False,
                  pod_template_file=None,
                  priority_class_name=None,
+                 init_containers=None,
                  *args,
                  **kwargs):
         if kwargs.get('xcom_push') is not None:
@@ -223,6 +225,7 @@ class KubernetesPodOperator(BaseOperator):  # pylint: disable=too-many-instance-
         self.dnspolicy = dnspolicy
         self.schedulername = schedulername
         self.full_pod_spec = full_pod_spec
+        self.init_containers = init_containers or []
         self.init_containers = init_containers or []
         self.log_events_on_failure = log_events_on_failure
         self.pod_template_file = pod_template_file
